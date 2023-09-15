@@ -1,0 +1,80 @@
+// prims algorithm using priority queue
+
+class Solution {
+
+    public class Vertex implements Comparable <Vertex>
+    {
+        int x1;
+        int x2;
+        int minKey;
+        boolean inQueue;
+
+        public Vertex(int x, int y)
+        {
+            x1 = x;
+            x2 = y;
+            inQueue = true;
+            minKey = Integer.MAX_VALUE;
+        }
+
+        public int compareTo(Vertex other) 
+        {
+            if(this.minKey == other.minKey)
+            {
+                return 0;
+            }
+            if(this.minKey>other.minKey)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+    }
+    public int minCostConnectPoints(int[][] points) {
+         PriorityQueue<Vertex> q = new PriorityQueue<>();
+         ArrayList<Vertex> adj = new ArrayList<Vertex>();
+        for(int i =0; i<points.length; i++)
+        {
+            Vertex x = new Vertex(points[i][0],points[i][1]);
+            adj.add(x);
+            q.add(x);
+        }
+
+        int minSum = 0;
+        while(!q.isEmpty())
+        {
+            Vertex x = q.poll();
+            x.inQueue = false;
+            for(Vertex v: adj)
+            {
+                if(v.inQueue)
+                {
+                    if(dist(x,v) < v.minKey)
+                    {
+                        q.remove(v);
+                        v.minKey = dist(x,v);
+                        q.add(v);
+                    }
+                }
+            }
+
+            
+        }
+
+        for(int i =1; i< adj.size(); i++)
+        {
+            minSum += adj.get(i).minKey;
+        }
+
+        return minSum;
+    }
+
+    private int dist (Vertex x, Vertex z)
+    {
+        return Math.abs(x.x1 - z.x1) + Math.abs(x.x2 - z.x2);
+    }
+}
